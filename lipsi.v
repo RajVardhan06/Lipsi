@@ -30,10 +30,10 @@ begin
 
 
     else begin
-    if (pc == 8'd255 || instructions[pc] == 8'd255) begin
+    if (pc == 8'd255 || instructions[pc] == 8'd255) begin // exit
         pc <= pc;
     end
-    if (flagi) begin
+    else if (flagi) begin                   // ALU immediate second clock cycle
         op = instructions[pc];
         if (fff == 3'd0) begin
             A <= A + op;
@@ -63,29 +63,29 @@ begin
         
     end
 
-    if (branch) begin
+    else if (branch) begin              // branch second clk cycle
         pc <= instructions[pc];
         branch = 0;
     end
-    if (branchifA0) begin
+    else if (branchifA0) begin          // branch if A = 0 second clk cycle
         if (A == 8'h0) begin
             pc <= instructions[pc];
             branchifA0 = 0;
         end
     end
-    if (branchifAn0) begin
+    else if (branchifAn0) begin         // branch if A != 0 second clk cycle
         if (A != 8'h0) begin
             pc <= instructions[pc];
             branchifAn0 = 0;
         end
     end
 
-    else if (instructions[pc][7:4] == 4'b1100) begin
+    else if (instructions[pc][7:4] == 4'b1100) begin        // ALU immediate first clk cycle
         flagi = 1'b1;
         fff = instructions[pc][2:0];
     end
 
-    else if (instructions[pc][7] == 1'b0) begin
+    else if (instructions[pc][7] == 1'b0) begin             // ALU register
         fff = instructions[pc][6:4];
         mr = memory[instructions[pc][3:0]];
         if (fff == 3'd0) begin
@@ -114,18 +114,20 @@ begin
         end
     end
 
-    else if (instructions[pc][7:4] == 4'b1000) begin
+    else if (instructions[pc][7:4] == 4'b1000) begin        // store A into memory
         memory[instructions[pc][3:0]] = A;
     end
 
-    else if (instructions[pc][7:4] == 4'b1101) begin
-        case (instructions[pc][1:0])
+    else if (instructions[pc][7:4] == 4'b1101) begin        // branch first clk cycle
+        case (instructions[pc][1:0])    
             2'b00 : branch = 1'b1;
             2'b01 : branchifA0 = 1'b1;
             2'b10 : branchifAn0 = 1'b1;
             default: branch = 1'b1;
         endcase
     end
+
+    // else if ()
 
 
     
