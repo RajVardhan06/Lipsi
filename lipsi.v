@@ -162,7 +162,9 @@ begin
 
 
 
-    pc <= pc+1;
+    if (!branch && !branchifA0 && !branchifAn0) begin
+        pc <= pc+1;
+    end
 
 end
 
