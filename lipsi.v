@@ -8,6 +8,17 @@ reg[7:0] instructions[0:255];
 reg[7:0] memory[0:255];
 
 
+reg flagi;
+reg branch;
+reg branchifA0;
+reg branchifAn0;
+reg c;
+reg[7:0] pc;
+
+reg[7:0] branchto;
+reg[2:0] fff;
+reg[7:0] op;
+reg[7:0] mr;
 
 
 initial begin
@@ -25,23 +36,18 @@ initial begin
     instructions[11] = 8'h04;
     instructions[12] = 8'h72;
     instructions[13] = 8'hff;
+    flagi = 1'b0;
+    branch = 1'b0;
+    branchifA0 = 1'b0;
+    branchifAn0 = 1'b0;
+    pc = 8'h0;
+    c = 1'b0;
     
 end
 
 
 
 
-reg pc = 4'h0;
-integer flagi = 1'b0;
-integer branch = 1'b0;
-integer branchifA0 = 1'b0;
-integer branchifAn0 = 1'b0;
-
-integer branchto = 8'h0;
-integer fff = 3'b0;
-integer op = 8'h0;
-reg c = 1'b0;
-integer mr = 8'h0;
 
 
 
@@ -54,10 +60,12 @@ begin
 
 
     else begin
+
     if (pc == 8'd255 || instructions[pc] == 8'd255) begin // exit
         pc <= pc;
     end
-    else if (flagi) begin                   // ALU immediate second clock cycle
+    else begin
+    if (flagi) begin                   // ALU immediate second clock cycle
         op = instructions[pc];
         if (fff == 3'd0) begin
             A <= A + op;
@@ -90,17 +98,20 @@ begin
     else if (branch) begin              // branch second clk cycle
         pc <= instructions[pc];
         branch = 0;
+        pc<=pc-1;
     end
     else if (branchifA0) begin          // branch if A = 0 second clk cycle
         if (A == 8'h0) begin
             pc <= instructions[pc];
             branchifA0 = 0;
+            pc<=pc-1;
         end
     end
     else if (branchifAn0) begin         // branch if A != 0 second clk cycle
         if (A != 8'h0) begin
             pc <= instructions[pc];
             branchifAn0 = 0;
+            pc<=pc-1;
         end
     end
 
@@ -147,24 +158,22 @@ begin
             2'b00 : branch = 1'b1;
             2'b10 : branchifA0 = 1'b1;
             2'b11 : branchifAn0 = 1'b1;
-            default: branch = 1'b1;
+            // default: branch = 1'b1;
         endcase
     end
 
     // else if ()
 
+    pc <= pc+1;
 
-    
-    
+    end
     
         
     end
 
 
 
-    if (!branch && !branchifA0 && !branchifAn0) begin
-        pc <= pc+1;
-    end
+    
 
 end
 
@@ -186,6 +195,7 @@ reg [3:0] LED_BCD;
 reg [19:0] refresh_counter;
 wire [1:0] LED_activating_counter;
 wire clk1hz;
+// wire[7:0] pc;
 clkdiv(clock_100Mhz,clk1hz);
 
 lipsi_processor l(clk1hz,reset,displayed_number);
@@ -213,7 +223,7 @@ begin
         2'b01: begin
             Anode_Activate = 4'b1011; 
             // activate LED2 and Deactivate LED1, LED3, LED4
-            LED_BCD = (displayed_number % 1000)/100;
+            LED_BCD = (displayed_number%1000)/100;
             // the second digit of the 16-bit number
               end
         2'b10: begin
