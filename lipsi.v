@@ -24,7 +24,7 @@ reg[7:0] mr;
 
 initial begin
     instructions[0] = 8'hc7;
-    instructions[1] = 8'h0a;
+    instructions[1] = 8'h05;
     instructions[2] = 8'h81;
     instructions[3] = 8'h82;
     instructions[4] = 8'hc1;
@@ -100,7 +100,6 @@ begin
     end
 
     else if (branch) begin              // branch second clk cycle
-        branchto = instructions[pc];
         pc = branchto;
         branch = 0;
         
@@ -108,7 +107,6 @@ begin
     else if (branchifA0) begin          // branch if A = 0 second clk cycle
         branchifA0 = 0;
         if (A == 8'h0) begin
-            branchto = instructions[pc];
             pc = branchto;
             
         end
@@ -117,7 +115,6 @@ begin
     else if (branchifAn0) begin         // branch if A != 0 second clk cycle
         branchifAn0 = 0;
         if (A != 8'h0) begin
-            branchto = instructions[pc];
             pc = branchto;
             
         end
@@ -173,22 +170,25 @@ begin
         case (instructions[pc][1:0])    
             2'b00 : begin 
                 branch = 1'b1;
-                // branchto = instructions[pc+1];
+                branchto <= instructions[pc+1];
             end
             2'b10 : begin
                  branchifA0 = 1'b1;
-                //  branchto = instructions[pc+1];
+                 branchto <= instructions[pc+1];
             end
             2'b11 : begin
                  branchifAn0 = 1'b1;
-                //  branchto = instructions[pc+1];
+                 branchto <= instructions[pc+1];
             end
             // default: branch = 1'b1;
         endcase
         pc <= pc+1;
     end
 
-    // else if ()
+    // else if (instructions[pc][7:4] == 4'b1001) begin
+    //     memory[instructions[pc][3:0]] <= pc;
+    //     pc <= A;
+    // end
     
 
     end
@@ -213,17 +213,13 @@ module Seven_segment_LED_Display_Controller(
     output reg [6:0] LED_out
 );
 
-// reg [26:0] one_second_counter;
-// wire one_second_enable;
-wire [7:0] displayed_number; // 4-bit counter
+wire [7:0] displayed_number;
 reg [3:0] LED_BCD;
 reg [19:0] refresh_counter;
 wire [1:0] LED_activating_counter;
 wire clk1hz;
-// wire[7:0] pc;
-clkdiv(clock_100Mhz,clk1hz);
+clkdiv(clock_100Mhz, clk1hz);
 
-// wire[7:0] pc;
 lipsi_processor l(clk1hz,reset,displayed_number);
 
 
@@ -242,27 +238,19 @@ begin
     case(LED_activating_counter)
         2'b00: begin
             Anode_Activate = 4'b0111; 
-            // activate LED1 and Deactivate LED2, LED3, LED4
             LED_BCD = displayed_number/1000;
-            // the first digit of the 16-bit number
               end
         2'b01: begin
-            Anode_Activate = 4'b1011; 
-            // activate LED2 and Deactivate LED1, LED3, LED4
+            Anode_Activate = 4'b1011;
             LED_BCD = (displayed_number%1000)/100;
-            // the second digit of the 16-bit number
               end
         2'b10: begin
-            Anode_Activate = 4'b1101; 
-            // activate LED3 and Deactivate LED2, LED1, LED4
+            Anode_Activate = 4'b1101;
             LED_BCD = ((displayed_number % 1000)%100)/10;
-            // the third digit of the 16-bit number
                 end
         2'b11: begin
-            Anode_Activate = 4'b1110; 
-            // activate LED4 and Deactivate LED2, LED3, LED1
+            Anode_Activate = 4'b1110;
             LED_BCD = ((displayed_number % 1000)%100)%10;
-            // the fourth digit of the 16-bit number    
                end
         endcase
 end
@@ -270,23 +258,21 @@ end
 always @(*)
 begin
     case(LED_BCD)
-        4'b0000: LED_out = 7'b0000001; // "0"
-        4'b0001: LED_out = 7'b1001111; // "1"
-        4'b0010: LED_out = 7'b0010010; // "2"
-        4'b0011: LED_out = 7'b0000110; // "3"
-        4'b0100: LED_out = 7'b1001100; // "4"
-        4'b0101: LED_out = 7'b0100100; // "5"
-        4'b0110: LED_out = 7'b0100000; // "6"
-        4'b0111: LED_out = 7'b0001111; // "7"
-        4'b1000: LED_out = 7'b0000000; // "8"
-        4'b1001: LED_out = 7'b0000100; // "9"
-        default: LED_out = 7'b0000001; // "0"
+        4'b0000: LED_out = 7'b0000001;
+        4'b0001: LED_out = 7'b1001111;
+        4'b0010: LED_out = 7'b0010010;
+        4'b0011: LED_out = 7'b0000110;
+        4'b0100: LED_out = 7'b1001100;
+        4'b0101: LED_out = 7'b0100100;
+        4'b0110: LED_out = 7'b0100000;
+        4'b0111: LED_out = 7'b0001111;
+        4'b1000: LED_out = 7'b0000000;
+        4'b1001: LED_out = 7'b0000100;
+        default: LED_out = 7'b0000001;
     endcase
 end
 
 endmodule
-
-
 
 module clkdiv (input clk, output reg clkout);
     reg[31:0] count;
@@ -303,4 +289,3 @@ module clkdiv (input clk, output reg clkout);
     end
     
 endmodule
-
