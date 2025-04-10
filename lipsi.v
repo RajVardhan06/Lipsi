@@ -1,7 +1,8 @@
 module lipsi_processor(
     input clk,
     input reset,
-    output reg[7:0] A
+    output reg[7:0] A,
+    output reg[7:0] pc
 );
 
 reg[7:0] instructions[0:255];
@@ -13,7 +14,7 @@ reg branch;
 reg branchifA0;
 reg branchifAn0;
 reg c;
-reg[7:0] pc;
+// reg[7:0] pc;
 
 reg[7:0] branchto;
 reg[2:0] fff;
@@ -92,79 +93,97 @@ begin
             A <= op;
         end
         flagi = 1'b0;
+        pc <= pc+1;
         
     end
 
     else if (branch) begin              // branch second clk cycle
-        pc <= instructions[pc];
+        // branchto <= instructions[pc];
+        pc = branchto;
         branch = 0;
-        pc<=pc-1;
+        
     end
     else if (branchifA0) begin          // branch if A = 0 second clk cycle
         if (A == 8'h0) begin
-            pc <= instructions[pc];
+            // branchto <= instructions[pc];
+            pc = branchto;
             branchifA0 = 0;
-            pc<=pc-1;
+            
         end
+        else pc <= pc+1;
     end
     else if (branchifAn0) begin         // branch if A != 0 second clk cycle
         if (A != 8'h0) begin
-            pc <= instructions[pc];
+            // branchto <= instructions[pc];
+            pc = branchto;
             branchifAn0 = 0;
-            pc<=pc-1;
+            
         end
+        else pc <= pc+1;
     end
-
+ 
     else if (instructions[pc][7:4] == 4'b1100) begin        // ALU immediate first clk cycle
         flagi = 1'b1;
         fff = instructions[pc][2:0];
+        pc <= pc+1;
     end
 
     else if (instructions[pc][7] == 1'b0) begin             // ALU register
         fff = instructions[pc][6:4];
         mr = memory[instructions[pc][3:0]];
         if (fff == 3'd0) begin
-            A <= A + mr;
+            A = A + mr;
         end
         else if (fff == 3'd1) begin
-            A <= A - mr;
+            A = A - mr;
         end
         else if (fff == 3'd2) begin
-            A <= A + mr + c;
+            A = A + mr + c;
         end
         else if (fff == 3'd3) begin
-            A <= A - mr - c;
+            A = A - mr - c;
         end
         else if (fff == 3'd4) begin
-            A <= A & mr;
+            A = A & mr;
         end
         else if (fff == 3'd5) begin
-            A <= A | mr;
+            A = A | mr;
         end
         else if (fff == 3'd6) begin
-            A <= A ^ mr;
+            A = A ^ mr;
         end
         else if (fff == 3'd7) begin
-            A <= mr;
+            A = mr;
         end
+        pc <= pc+1;
     end
 
     else if (instructions[pc][7:4] == 4'b1000) begin        // store A into memory
         memory[instructions[pc][3:0]] = A;
+        pc <= pc+1;
     end
 
     else if (instructions[pc][7:4] == 4'b1101) begin        // branch first clk cycle
         case (instructions[pc][1:0])    
-            2'b00 : branch = 1'b1;
-            2'b10 : branchifA0 = 1'b1;
-            2'b11 : branchifAn0 = 1'b1;
+            2'b00 : begin 
+                branch = 1'b1;
+                branchto = instructions[pc+1];
+            end
+            2'b10 : begin
+                 branchifA0 = 1'b1;
+                 branchto = instructions[pc+1];
+            end
+            2'b11 : begin
+                 branchifAn0 = 1'b1;
+                 branchto = instructions[pc+1];
+            end
             // default: branch = 1'b1;
         endcase
+        pc <= pc+1;
     end
 
     // else if ()
-
-    pc <= pc+1;
+    
 
     end
     
@@ -198,7 +217,8 @@ wire clk1hz;
 // wire[7:0] pc;
 clkdiv(clock_100Mhz,clk1hz);
 
-lipsi_processor l(clk1hz,reset,displayed_number);
+wire[7:0] pc;
+lipsi_processor l(clk1hz,reset,displayed_number,pc);
 
 
 always @(posedge clock_100Mhz or posedge reset)
@@ -217,13 +237,13 @@ begin
         2'b00: begin
             Anode_Activate = 4'b0111; 
             // activate LED1 and Deactivate LED2, LED3, LED4
-            LED_BCD = displayed_number/1000;
+            LED_BCD = pc/10;
             // the first digit of the 16-bit number
               end
         2'b01: begin
             Anode_Activate = 4'b1011; 
             // activate LED2 and Deactivate LED1, LED3, LED4
-            LED_BCD = (displayed_number%1000)/100;
+            LED_BCD = pc%10;
             // the second digit of the 16-bit number
               end
         2'b10: begin
