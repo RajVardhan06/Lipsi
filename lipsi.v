@@ -100,7 +100,7 @@ begin
     end
 
     else if (branch) begin              // branch second clk cycle
-        // branchto <= instructions[pc];
+        branchto = instructions[pc];
         pc = branchto;
         branch = 0;
         
@@ -108,7 +108,7 @@ begin
     else if (branchifA0) begin          // branch if A = 0 second clk cycle
         branchifA0 = 0;
         if (A == 8'h0) begin
-            // branchto <= instructions[pc];
+            branchto = instructions[pc];
             pc = branchto;
             
         end
@@ -117,7 +117,7 @@ begin
     else if (branchifAn0) begin         // branch if A != 0 second clk cycle
         branchifAn0 = 0;
         if (A != 8'h0) begin
-            // branchto <= instructions[pc];
+            branchto = instructions[pc];
             pc = branchto;
             
         end
@@ -173,15 +173,15 @@ begin
         case (instructions[pc][1:0])    
             2'b00 : begin 
                 branch = 1'b1;
-                branchto = instructions[pc+1];
+                // branchto = instructions[pc+1];
             end
             2'b10 : begin
                  branchifA0 = 1'b1;
-                 branchto = instructions[pc+1];
+                //  branchto = instructions[pc+1];
             end
             2'b11 : begin
                  branchifAn0 = 1'b1;
-                 branchto = instructions[pc+1];
+                //  branchto = instructions[pc+1];
             end
             // default: branch = 1'b1;
         endcase
