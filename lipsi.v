@@ -64,6 +64,7 @@ begin
 
     if (pc == 8'd255 || instructions[pc] == 8'd255) begin // exit
         pc <= pc;
+        
     end
     else begin
     if (flagi) begin                   // ALU immediate second clock cycle
