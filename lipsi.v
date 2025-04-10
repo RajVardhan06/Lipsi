@@ -72,13 +72,13 @@ begin
     if (flagi) begin                   // ALU immediate second clock cycle
         op = instructions[pc];
         if (fff == 3'd0) begin
-            A <= A + op;
+            {c,A} <= A + op;
         end
         else if (fff == 3'd1) begin
             A <= A-op;
         end
         else if (fff == 3'd2) begin
-            A <= A + op + c;
+            {c,A} <= A + op + c;
         end
         else if (fff == 3'd3) begin
             A <= A - op - c;
@@ -133,13 +133,13 @@ begin
         fff = instructions[pc][6:4];
         mr = memory[instructions[pc][3:0]];
         if (fff == 3'd0) begin
-            A = A + mr;
+            {c,A} = A + mr;
         end
         else if (fff == 3'd1) begin
             A = A - mr;
         end
         else if (fff == 3'd2) begin
-            A = A + mr + c;
+            {c,A} = A + mr + c;
         end
         else if (fff == 3'd3) begin
             A = A - mr - c;
