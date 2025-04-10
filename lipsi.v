@@ -1,8 +1,7 @@
 module lipsi_processor(
     input clk,
     input reset,
-    output reg[7:0] A,
-    output reg[7:0] pc
+    output reg[7:0] A
 );
 
 reg[7:0] instructions[0:255];
@@ -15,7 +14,7 @@ reg branchifA0;
 reg branchifAn0;
 reg c;
 reg mrbool;
-// reg[7:0] pc;
+reg[7:0] pc;
 
 reg[7:0] branchto;
 reg[2:0] fff;
@@ -252,8 +251,8 @@ wire clk1hz;
 // wire[7:0] pc;
 clkdiv(clock_100Mhz,clk1hz);
 
-wire[7:0] pc;
-lipsi_processor l(clk1hz,reset,displayed_number,pc);
+// wire[7:0] pc;
+lipsi_processor l(clk1hz,reset,displayed_number);
 
 
 always @(posedge clock_100Mhz or posedge reset)
@@ -272,13 +271,13 @@ begin
         2'b00: begin
             Anode_Activate = 4'b0111; 
             // activate LED1 and Deactivate LED2, LED3, LED4
-            LED_BCD = pc/10;
+            LED_BCD = displayed_number/1000;
             // the first digit of the 16-bit number
               end
         2'b01: begin
             Anode_Activate = 4'b1011; 
             // activate LED2 and Deactivate LED1, LED3, LED4
-            LED_BCD = pc%10;
+            LED_BCD = (displayed_number%1000)/100;
             // the second digit of the 16-bit number
               end
         2'b10: begin
