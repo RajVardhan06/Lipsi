@@ -14,6 +14,7 @@ reg branch;
 reg branchifA0;
 reg branchifAn0;
 reg c;
+reg mrbool;
 // reg[7:0] pc;
 
 reg[7:0] branchto;
@@ -41,6 +42,7 @@ initial begin
     branch = 1'b0;
     branchifA0 = 1'b0;
     branchifAn0 = 1'b0;
+
     pc = 8'h0;
     c = 1'b0;
     
@@ -105,23 +107,51 @@ begin
         
     end
     else if (branchifA0) begin          // branch if A = 0 second clk cycle
+        branchifA0 = 0;
         if (A == 8'h0) begin
             // branchto <= instructions[pc];
             pc = branchto;
-            branchifA0 = 0;
             
         end
         else pc <= pc+1;
     end
     else if (branchifAn0) begin         // branch if A != 0 second clk cycle
+        branchifAn0 = 0;
         if (A != 8'h0) begin
             // branchto <= instructions[pc];
             pc = branchto;
-            branchifAn0 = 0;
             
         end
         else pc <= pc+1;
     end
+    // else if (mrbool == 1'b1)begin
+    //     if (fff == 3'd0) begin
+    //         A <= A + mr;
+    //     end
+    //     else if (fff == 3'd1) begin
+    //         A <= A - mr;
+    //     end
+    //     else if (fff == 3'd2) begin
+    //         A <= A + mr + c;
+    //     end
+    //     else if (fff == 3'd3) begin
+    //         A <= A - mr - c;
+    //     end
+    //     else if (fff == 3'd4) begin
+    //         A <= A & mr;
+    //     end
+    //     else if (fff == 3'd5) begin
+    //         A <= A | mr;
+    //     end
+    //     else if (fff == 3'd6) begin
+    //         A <= A ^ mr;
+    //     end
+    //     else if (fff == 3'd7) begin
+    //         A <= mr;
+    //     end
+    //     // mrbool = 1'b0;
+    //     pc <= pc+1;
+    // end
  
     else if (instructions[pc][7:4] == 4'b1100) begin        // ALU immediate first clk cycle
         flagi = 1'b1;
@@ -129,9 +159,11 @@ begin
         pc <= pc+1;
     end
 
+    
     else if (instructions[pc][7] == 1'b0) begin             // ALU register
         fff = instructions[pc][6:4];
         mr = memory[instructions[pc][3:0]];
+        // mrbool <= 1'b1;
         if (fff == 3'd0) begin
             A = A + mr;
         end
@@ -156,7 +188,9 @@ begin
         else if (fff == 3'd7) begin
             A = mr;
         end
+        // mrbool = 1'b0;
         pc <= pc+1;
+        
     end
 
     else if (instructions[pc][7:4] == 4'b1000) begin        // store A into memory
