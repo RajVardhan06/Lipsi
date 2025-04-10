@@ -20,6 +20,7 @@ reg[7:0] branchto;
 reg[2:0] fff;
 reg[7:0] op;
 reg[7:0] mr;
+reg temp;
 
 
 initial begin
@@ -131,7 +132,6 @@ begin
     else if (instructions[pc][7] == 1'b0) begin             // ALU register
         fff = instructions[pc][6:4];
         mr = memory[instructions[pc][3:0]];
-        // mrbool <= 1'b1;
         if (fff == 3'd0) begin
             A = A + mr;
         end
@@ -156,7 +156,6 @@ begin
         else if (fff == 3'd7) begin
             A = mr;
         end
-        // mrbool = 1'b0;
         pc <= pc+1;
         
     end
@@ -185,11 +184,65 @@ begin
         pc <= pc+1;
     end
 
-    // else if (instructions[pc][7:4] == 4'b1001) begin
-    //     memory[instructions[pc][3:0]] <= pc;
-    //     pc <= A;
-    // end
+    else if (instructions[pc][7:4] == 4'b1001) begin
+        memory[instructions[pc][3:0]] <= pc;
+        pc <= A;
+    end
     
+    else if (instructions[pc][7:4] == 4'b1010) begin
+        A <= memory[memory[instructions[pc][3:0]]];
+        pc <= pc+1;
+    end
+
+    else if (instructions[pc][7:4] == 4'b1011) begin
+        memory[memory[instructions[pc][3:0]]] <= A;
+        pc <= pc+1;
+    end
+
+    else if (instructions[pc][7:4] == 4'b1110) begin
+        if (instructions[pc][2] == 1'b0) begin
+            if (instructions[pc][1:0] == 2'b00) begin
+                temp = A[0];
+                A = A >> 1;
+                A[7] = temp;
+            end
+            else if (instructions[pc][1:0] == 2'b01) begin
+                temp = A[0];
+                A = A >> 1;
+                A[7] = c;
+                c = temp;
+            end
+            else if (instructions[pc][1:0] == 2'b10) begin
+                A = A >> 1;
+            end
+            else begin
+                A = A >> 1;
+                A[7] = c;
+                c = 1'b0;
+            end
+        end
+        else begin
+            if (instructions[pc][1:0] == 2'b00) begin
+                temp = A[7];
+                A = A << 1;
+                A[0] = temp;
+            end
+            else if (instructions[pc][1:0] == 2'b01) begin
+                temp = A[7];
+                A = A << 1;
+                A[0] = c;
+                c = temp;
+            end
+            else if (instructions[pc][1:0] == 2'b10) begin
+                A = A << 1;
+            end
+            else begin
+                c = A[7];
+                A = A << 1;
+            end
+        end
+        pc <= pc+1;
+    end
 
     end
     
@@ -206,7 +259,7 @@ endmodule
 
 
 
-module Seven_segment_LED_Display_Controller(
+module Lipsi_seven_segment_display(
     input clock_100Mhz,
     input reset,
     output reg [3:0] Anode_Activate,
