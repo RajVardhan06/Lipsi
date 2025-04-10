@@ -123,34 +123,6 @@ begin
         end
         else pc <= pc+1;
     end
-    // else if (mrbool == 1'b1)begin
-    //     if (fff == 3'd0) begin
-    //         A <= A + mr;
-    //     end
-    //     else if (fff == 3'd1) begin
-    //         A <= A - mr;
-    //     end
-    //     else if (fff == 3'd2) begin
-    //         A <= A + mr + c;
-    //     end
-    //     else if (fff == 3'd3) begin
-    //         A <= A - mr - c;
-    //     end
-    //     else if (fff == 3'd4) begin
-    //         A <= A & mr;
-    //     end
-    //     else if (fff == 3'd5) begin
-    //         A <= A | mr;
-    //     end
-    //     else if (fff == 3'd6) begin
-    //         A <= A ^ mr;
-    //     end
-    //     else if (fff == 3'd7) begin
-    //         A <= mr;
-    //     end
-    //     // mrbool = 1'b0;
-    //     pc <= pc+1;
-    // end
  
     else if (instructions[pc][7:4] == 4'b1100) begin        // ALU immediate first clk cycle
         flagi = 1'b1;
