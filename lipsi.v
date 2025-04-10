@@ -25,7 +25,7 @@ reg temp;
 
 initial begin
     instructions[0] = 8'hc7;
-    instructions[1] = 8'h05;
+    instructions[1] = 8'h0f;
     instructions[2] = 8'h81;
     instructions[3] = 8'h82;
     instructions[4] = 8'hc1;
@@ -271,9 +271,9 @@ reg [3:0] LED_BCD;
 reg [19:0] refresh_counter;
 wire [1:0] LED_activating_counter;
 wire clk1hz;
-clkdiv(clock_100Mhz, clk1hz);
+// clkdiv(clock_100Mhz, clk1hz);
 
-lipsi_processor l(clk1hz,reset,displayed_number);
+lipsi_processor l(clock_100Mhz,reset,displayed_number);
 
 
 always @(posedge clock_100Mhz or posedge reset)
