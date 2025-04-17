@@ -24,65 +24,125 @@ reg temp;
 
 
 initial begin
-    // instructions[0] = 8'hc7;    // sum of first 15 numbers
-    // instructions[1] = 8'h0f;
-    // instructions[2] = 8'h81;
-    // instructions[3] = 8'h82;
-    // instructions[4] = 8'hc1;
-    // instructions[5] = 8'h01;
-    // instructions[6] = 8'h81;
-    // instructions[7] = 8'h02;
-    // instructions[8] = 8'h82;
-    // instructions[9] = 8'h71;
-    // instructions[10] = 8'hd3;
-    // instructions[11] = 8'h04;
-    // instructions[12] = 8'h72;
-    // instructions[13] = 8'hff;
+//     instructions[0] = 8'hc7;    // sum of first 15 numbers
+//     instructions[1] = 8'h0f;
+//     instructions[2] = 8'h81;
+//     instructions[3] = 8'h82;
+//     instructions[4] = 8'hc1;
+//     instructions[5] = 8'h01;
+//     instructions[6] = 8'h81;
+//     instructions[7] = 8'h02;
+//     instructions[8] = 8'h82;
+//     instructions[9] = 8'h71;
+//     instructions[10] = 8'hd3;
+//     instructions[11] = 8'h04;
+//     instructions[12] = 8'h72;
+//     instructions[13] = 8'hff;
 
-    // instructions[0] = 8'hc7;   // sum of first n even numbers
-    // instructions[1] = 8'h05;
-    // instructions[2] = 8'he6;
-    // instructions[3] = 8'h81;
-    // instructions[4] = 8'h82;
-    // instructions[5] = 8'h83;
-    // instructions[6] = 8'hc1;
-    // instructions[7] = 8'h02;
-    // instructions[8] = 8'h82;
-    // instructions[9] = 8'h03;
-    // instructions[10] = 8'h83;
-    // instructions[11] = 8'h72;
-    // instructions[12] = 8'hd3;
-    // instructions[13] = 8'h06;
-    // instructions[14] = 8'h73;
-    // instructions[15] = 8'hff;
+//     instructions[0] = 8'hc7;   // sum of first n even numbers
+//     instructions[1] = 8'h05;
+//     instructions[2] = 8'he6;
+//     instructions[3] = 8'h81;
+//     instructions[4] = 8'h82;
+//     instructions[5] = 8'h83;
+//     instructions[6] = 8'hc1;
+//     instructions[7] = 8'h02;
+//     instructions[8] = 8'h82;
+//     instructions[9] = 8'h03;
+//     instructions[10] = 8'h83;
+//     instructions[11] = 8'h72;
+//     instructions[12] = 8'hd3;
+//     instructions[13] = 8'h06;
+//     instructions[14] = 8'h73;
+//     instructions[15] = 8'hff;
 
-    instructions[0] = 8'hc7;         // Nth fibonacci term including 0.
-    instructions[1] = 8'h00;
-    instructions[2] = 8'h81;
-    instructions[3] = 8'hc7;
-    instructions[4] = 8'h01;
-    instructions[5] = 8'h82;
-    instructions[6] = 8'hc7;
-    instructions[7] = 8'h0e;          // input n = 14 ==== output 233
-    instructions[8] = 8'hc1;
-    instructions[9] = 8'h02;
-    instructions[10] = 8'h80;
-    instructions[11] = 8'h71;
-    instructions[12] = 8'h02;
-    instructions[13] = 8'h83;
-    instructions[14] = 8'h72;
-    instructions[15] = 8'h81;
-    instructions[16] = 8'h73;
-    instructions[17] = 8'h82;
-    instructions[18] = 8'h70;
-    instructions[19] = 8'hc1;
-    instructions[20] = 8'h01;
-    instructions[21] = 8'h80;
-    instructions[22] = 8'hd3;
-    instructions[23] = 8'h0b;
-    instructions[24] = 8'h72;
-    instructions[25] = 8'hff;
+//     instructions[0] = 8'hc7;       // Nth fibonacci number  
+//     instructions[1] = 8'h00;
+//     instructions[2] = 8'h81;
+//     instructions[3] = 8'hc7;
+//     instructions[4] = 8'h01;
+//     instructions[5] = 8'h82;
+//     instructions[6] = 8'hc7;
+//     instructions[7] = 8'h0c;        // Input of number n
+//     instructions[8] = 8'hc1;
+//     instructions[9] = 8'h02;
+//     instructions[10] = 8'h80;
+//     instructions[11] = 8'h71;
+//     instructions[12] = 8'h02;
+//     instructions[13] = 8'h83;
+//     instructions[14] = 8'h72;
+//     instructions[15] = 8'h81;
+//     instructions[16] = 8'h73;
+//     instructions[17] = 8'h82;
+//     instructions[18] = 8'h70;
+//     instructions[19] = 8'hc1;
+//     instructions[20] = 8'h01;
+//     instructions[21] = 8'h80;
+//     instructions[22] = 8'hd3;
+//     instructions[23] = 8'h0b;
+//     instructions[24] = 8'h72;
+//     instructions[25] = 8'hff;
 
+//     instructions[0] = 8'hc7;    // Left shifts and Right shifts     
+//     instructions[1] = 8'hff;
+//     instructions[2] = 8'hc0;
+//     instructions[3] = 8'h0a;
+//     instructions[4] = 8'he7;
+//     instructions[5] = 8'he3;
+//     instructions[6] = 8'hff;
+
+//     instructions[0] = 8'hc7;
+//     instructions[1] = 8'h80;
+//     instructions[2] = 8'h81;
+//     instructions[3] = 8'hc7;
+//     instructions[4] = 8'h0a;
+//     instructions[5] = 8'hb1;
+//     instructions[6] = 8'hc7;
+//     instructions[7] = 8'h00;
+//     instructions[8] = 8'ha1;
+//     instructions[9] = 8'hff;
+
+//     instructions[0] = 8'hc7;       // Factrial of 5 
+//     instructions[1] = 8'h05;
+//     instructions[2] = 8'h81;
+//     instructions[3] = 8'hc7;
+//     instructions[4] = 8'h01;
+//     instructions[5] = 8'h84;
+//     instructions[6] = 8'h71;
+//     instructions[7] = 8'h82;
+//     instructions[8] = 8'h74;
+//     instructions[9] = 8'h83;
+//     instructions[10] = 8'hc7;
+//     instructions[11] = 8'h00;
+//     instructions[12] = 8'h75;
+//     instructions[13] = 8'h03;
+//     instructions[14] = 8'h85;
+//     instructions[15] = 8'h72;
+//     instructions[16] = 8'hc1;
+//     instructions[17] = 8'h01;
+//     instructions[18] = 8'h82;
+//     instructions[19] = 8'hd3;
+//     instructions[20] = 8'h0c;
+//     instructions[21] = 8'h75;
+//     instructions[22] = 8'h84;
+//     instructions[23] = 8'h71;
+//     instructions[24] = 8'hc1;
+//     instructions[25] = 8'h01;
+//     instructions[26] = 8'h81;
+//     instructions[27] = 8'hc1;
+//     instructions[28] = 8'h01;
+//     instructions[29] = 8'hd3;
+//     instructions[30] = 8'h07;
+//     instructions[31] = 8'h74;
+//     instructions[32] = 8'hff;
+
+//     instructions[0] = 8'hc7;       // Branch and Link
+//     instructions[1] = 8'h05;
+//     instructions[2] = 8'h91;
+//     instructions[3] = 8'hc7;
+//     instructions[4] = 8'h0a;
+//     instructions[5] = 8'h71;
+//     instructions[6] = 8'hff;
 
 
     flagi = 1'b0;
@@ -96,9 +156,7 @@ initial begin
 end
 
 
-
-
-
+integer i;
 
 
 always @ (posedge clk , posedge reset) 
@@ -106,12 +164,13 @@ begin
     if (reset)
     begin
         pc <= 0;
+        for (i=0;i<256;i=i+1) memory[i] <= 8'h00; 
     end
 
 
     else begin
 
-    if (pc == 8'd255 || instructions[pc] == 8'd255) begin // exit
+    if ((pc == 8'd255 || instructions[pc] == 8'd255) && (!flagi)) begin // exit
         pc <= pc;
         
     end
